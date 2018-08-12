@@ -170,6 +170,10 @@ func (template *Template) Replace(path string) {
 	}
 }
 
+func (template *Template) Fork(name string) {
+	template.name = name
+}
+
 func (template *Template) Save() error {
 	if template.mod.zip != nil {
 		return errors.New("Cannot write to zip files!")

@@ -10,6 +10,7 @@ import (
 )
 
 var ModsPath string
+var Public *Mod
 
 func init() {
 	uid, _ := user.Current()
@@ -30,6 +31,10 @@ type Mod struct {
 }
 
 func LoadPublic() (mod *Mod, err error) {
+	if Public != nil {
+		return Public, nil
+	}
+	
 	mod = new(Mod)
 	mod.Name = "public"
 	
@@ -46,6 +51,8 @@ func LoadPublic() (mod *Mod, err error) {
 		
 		mod.zip, err = zip.OpenReader(home+"/AppData/Local/0 A.D. alpha/binaries/data/mods/public/public.zip")
 	}
+	
+	Public = mod
 	
 	return
 }
@@ -82,6 +89,10 @@ func (mod *Mod) Open(path string) (io.ReadCloser, error) {
 	if file, err := os.Open(ModsPath+mod.Name+"/"+path); err == nil {
 		return file, nil
 	} else {
+		
+		if Public != nil {
+			return Public.Open(path)
+		}
 		
 		return nil, err
 	}
