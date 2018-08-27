@@ -52,7 +52,11 @@ func LoadPublic() (mod *Mod, err error) {
 		mod.zip, err = zip.OpenReader(home+"/AppData/Local/0 A.D. alpha/binaries/data/mods/public/public.zip")
 	}
 	
-	Public = mod
+	if Public == nil {
+		Public = mod
+	} else {
+		Public.zip = mod.zip
+	}
 	
 	return
 }
