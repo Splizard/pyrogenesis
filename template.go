@@ -146,17 +146,20 @@ func (template *Template) Set(path string, value string) {
 }
 
 func (template *Template) SetNode(path string, value *etree.Element) {
-	
+	if value == nil {
+		return
+	}	
 	for {
 		element := template.tree.Root().FindElement(path)
 		if element == nil {
 			template.Create(path)
 			continue
 		}
-		element.Parent().RemoveChild(element)
+		var parent = element.Parent()
+		parent.RemoveChild(element)
 		
-		if value == nil {
-			element.Parent().AddChild(value)
+		if value != nil {
+			parent.AddChild(value)
 		}
 		break
 	}
