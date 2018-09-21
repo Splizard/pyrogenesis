@@ -70,6 +70,21 @@ func (template *Template) Get(path string) (result string) {
 	return element.Text()
 }
 
+func (template *Template) GetNode(path string) (result *etree.Element) {
+	
+	//TODO deal with replace and disable.
+	if template.parent != nil {
+		result = template.parent.GetNode(path)
+	}
+	
+	element := template.tree.Root().FindElement(path)
+	if element == nil {
+		return result
+	}
+	
+	return element
+}
+
 func (template *Template) State(path string) (result bool) {
 
 	if template.parent != nil {
@@ -126,6 +141,23 @@ func (template *Template) Set(path string, value string) {
 			continue
 		}
 		element.SetText(value)
+		break
+	}
+}
+
+func (template *Template) SetNode(path string, value *etree.Element) {
+	
+	for {
+		element := template.tree.Root().FindElement(path)
+		if element == nil {
+			template.Create(path)
+			continue
+		}
+		element.Parent().RemoveChild(element)
+		
+		if value == nil {
+			element.Parent().AddChild(value)
+		}
 		break
 	}
 }
